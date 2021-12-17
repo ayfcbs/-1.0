@@ -7,9 +7,20 @@ body {
     justify-content: center;
     margin: 0;
     color: cadetblue;
-    font-family:楷体;
-    font-weight: bold;
 
+
+}
+
+
+.board {
+    background-color:粉色;
+}
+
+.title {
+    font-family:楷体;
+    font-size: xx-large;
+    font-weight: bolder;
+    text-align: center;
 }
 
 table {
@@ -18,8 +29,16 @@ table {
     margin: 0 auto;
 }
 
+
+.game-pane a  {
+    font-family:楷体;
+    font-size: large;
+    font-weight: bold;
+}
+
+
 .tips {
-    color: blueviolet;
+    color: black;
     font-family:楷体;
     font-size: 16 px;
     font-weight: bold;
@@ -46,13 +65,6 @@ table {
     user-select: none;
 }
 
-.button{
-    height: 10px;
-    width: 10px;
-    background-color: #000;
-    
-
-}
 
 .clear {
     border-style: solid;
@@ -60,8 +72,21 @@ table {
     background-color: #eee;
 }
 
+.game-pane a {
+    padding: 5px 15px;
+    color: rgb(26, 12, 12);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+}
+
+    
+
+
 .cell.landmine {
     background-color: orange;
+    background: #ccc url(../-1.0/8bac5ee88de91a501d45321181257d3.jpg)no-repeat center;
+    background-size: cover;
 }
 
 .cell.landmine.exploded {
@@ -70,4 +95,9 @@ table {
 
 .cell.landmine.success {
     background-color: green;
+}
+
+.flag {
+    background: #ccc url(../-1.0/微信图片_20211217203512.jpg)no-repeat center;
+    background-size: cover;
 }

@@ -4,33 +4,34 @@
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
-<body>
-  
-  <div class="game-pane">
-          <header class="header">
-            <div>扫雷小游戏</div>
-            <div class="level"> 
-                  
-                  <button class="choice-level">初级</button>
-                  <button class="choice-level">中级</button>
-                  <button class="choice-level">高级</button>
-                  <button class="restart">重新开始</button>
+
+
+
+<body background="../-1.0/微信图片_20211217183246.jpg" style="background-size: 100% 100%;">
+  <div class="game-pane">   
+      <table id="board" class="board">
+         <header class="header"> 
+            <div class="title">扫雷小游戏</div>
+            <br> 
+                <a href="javascript:easy ();">初级</a> &nbsp;
+                <a href="javascript:middle ();">中级</a> &nbsp;
+                <a href="javascript:difficult ();">高级</a> 
+                <a herf="restart">重新开始</a>
             </div>
-        </header>
-        <footer class="footer">剩余雷数:<span class="mineNum"></span>
+            <br>
+      </table>
+        <table class="tips">游戏规则:<span class="mineNum"></span>
             <div>
                 <span class="tips">左键扫雷，右键插旗，再次点击右键拔旗</span>
-        
             </div>
-        </footer>
-    <table id="board">
-        
-      
-
-    </table>
+            
+        </table>
   </div>
 
   <script src="script.js"></script>
 </body>
 
 </html>
+
+
+                

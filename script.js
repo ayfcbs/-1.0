@@ -1,13 +1,13 @@
 
 
 
-function renderBoard(numRows, numCols, grid) {
-    let boardEl = document.querySelector("#board");
+function renderBoard(numRows, numCols, grid) {                       //绘制棋盘 (行，列)
+    let boardEl = document.querySelector("#board");                  //得到id board
 
     for (let i = 0; i < numRows; i++) {
-        let trEl = document.createElement("tr");
+        let trEl = document.createElement("tr");                     //创建tr元素
         for (let j = 0; j < numCols; j++) {
-            let cellEl = document.createElement("div");
+            let cellEl = document.createElement("div");              //代表一个lei的位置
             cellEl.className = "cell";
             grid[i][j].cellEl = cellEl;
 
@@ -17,40 +17,48 @@ function renderBoard(numRows, numCols, grid) {
             //     cellEl.innerText = grid[i][j].count;
             // }
 
-            cellEl.addEventListener("click", (e)=> {
+            //取消右键方式
+            document.oncontextmenu = function(e){
+                return false;
+            }
+           
+            cellEl.addEventListener("click", (e)=> {                        //点击响应 
+                
+                
                 if (grid[i][j].count === -1) {
                     explode(grid, i, j, numRows, numCols)
-                    return;
+                    
+                    return alert("you lost");
                 }
 
-                if (grid[i][j].count === 0 ) {
+                if (grid[i][j].count === 0 ) {                             //围绕此处全部掀开
                     searchClearArea(grid, i, j, numRows, numCols);
                 } 
                 
                 else if (grid[i][j].count > 0) {
                     grid[i][j].clear = true;
-                    cellEl.classList.add("clear");
+                    cellEl.classList.add("clear");                         //只翻开此块
                     grid[i][j].cellEl.innerText = grid[i][j].count;
                 }
 
                 checkAllClear(grid);
-                // cellEl.classList.add("clear");
-
-            //右键
-            function handler(){
-            cellEl.classList.add("sweep");
-            }
-
-            cellEl.addEventListener("click",easyClearArea)
-            
-            
-            cellEl.addEventListener("contextmenu",handler)
-            board.oncontextmenu = function () {
-            return false
-            } 
-
+                if (checkAllClear(grid) == true){
+                    alert("You win");
+                }
+                 
+                
             });
 
+            cellEl.addEventListener("mousedown",(e)=>{
+                if (e.button == 2 && grid[i][j].clear == false && grid[i][j].flag == false){
+                    grid[i][j].cellEl.classList.add("flag");
+                    grid[i][j].flag = true;
+                }else if(e.button == 2) {
+                    grid[i][j].cellEl.classList.remove("flag");
+                    grid[i][j].flag = false;
+                }
+                    
+            });
             let tdEl = document.createElement("td");
             tdEl.append(cellEl);
 
@@ -60,57 +68,60 @@ function renderBoard(numRows, numCols, grid) {
     }
 }
 
-const directions = [
+ 
+                
+            
+const directions = [                                       //方向
     [-1, -1], [-1, 0], [-1, 1], // TL, TOP, TOP-RIGHT
     [0, -1], [0, 1],
     [1, -1], [1, 0], [1, 1],
 ]
 
-function initialize(numRows, numCols, numMines) {
-    let grid = new Array(numRows);
+function initialize(numRows, numCols, numMines) {               //初始化棋盘格 均为0 nummines为雷数
+    let grid = new Array(numRows);                          //grid  表示单元格
     for (let i = 0; i < numRows; i++) {
         grid[i] = new Array(numCols);
         for (let j = 0; j < numCols; j++) {
-            grid[i][j] = {
+            grid[i][j] = {                           //改为字典
                 clear: false,
                 count: 0
             };
         }
     }
 
-    let mines = [];
+    let mines = [];                                             //布雷
     for (let k = 0; k < numMines; k++) {
-        let cellSn = Math.trunc(Math.random() * numRows * numCols);
-        let row = Math.trunc(cellSn / numCols);
-        let col = cellSn % numCols;
+        let cellSn = Math.trunc(Math.random() * numRows * numCols);     //cellsn棋盘数=函数（x*行*列）
+        let row = Math.trunc(cellSn / numCols);          //雷所在行 除
+        let col = cellSn % numCols;                      //雷所在列 取余
 
         console.log(cellSn, row, col);
 
-        grid[row][col].count = -1;
-        mines.push([row, col]);
+        grid[row][col].count = -1;          //标-1
+        mines.push([row, col]);             //？
     }
 
     // 计算有雷的周边为零的周边雷数
     for (let [row, col] of mines) {
-        console.log("mine: ", row, col);
-        for (let [drow, dcol] of directions) {
-            let cellRow = row + drow;
+        console.log("mine: ", row, col);      //打印
+        for (let [drow, dcol] of directions) {     //遍历周边方向（那八个）
+            let cellRow = row + drow;         //得到周边方向行 列坐标
             let cellCol = col + dcol;
-            if (cellRow < 0 || cellRow >= numRows || cellCol < 0 || cellCol >= numCols) {
+            if (cellRow < 0 || cellRow >= numRows || cellCol < 0 || cellCol >= numCols) {   //这个不行 下一方向
                 continue;
             }
             if (grid[cellRow][cellCol].count === 0) {
                 console.log("target: ", cellRow, cellCol);
 
                 let count = 0;
-                for (let [arow, acol] of directions) {
+                for (let [arow, acol] of directions) {    //再循环一次周边
                     let ambientRow = cellRow + arow;
                     let ambientCol = cellCol + acol;
                     if (ambientRow < 0 || ambientRow >= numRows || ambientCol < 0 || ambientCol >= numCols) {
                         continue;
                     }
 
-                    if (grid[ambientRow][ambientCol].count === -1) {
+                    if (grid[ambientRow][ambientCol].count === -1) {    //如果有雷就加一个值
                         console.log("danger!", ambientRow, ambientCol);
                         count += 1;
                     }
@@ -124,28 +135,7 @@ function initialize(numRows, numCols, numMines) {
 
     }
 
-    //button的功能
-    var btns = document.getElementsByTagName('button');
-    var mine = null;
-    var ln = 0;
-    var arr = [
-        [9,9,9],
-        [16,16,40],
-        [28,28,99]
-    ];
-    for (let i = 0;i < btns.length - 1;i++){
-        btns[i].onclick = function () {
-            btns [ln].className = '';
-            this.className = 'active';
-            mine = new mine(arr[i][0], arr[i][1],arr[i][2]);
-            mine.init();
-            ln=i;
-            
-
-        }
-    }
-
-
+    
 
     
     // console.log(grid);
@@ -153,7 +143,7 @@ function initialize(numRows, numCols, numMines) {
     return grid;
 }
 
-function searchClearArea(grid, row, col, numRows, numCols) {
+function searchClearArea(grid, row, col, numRows, numCols) {          //掀开周边的函数
     let gridCell = grid[row][col];
     gridCell.clear = true;
     gridCell.cellEl.classList.add("clear");
@@ -166,14 +156,14 @@ function searchClearArea(grid, row, col, numRows, numCols) {
             continue;
         }
 
-        let gridCell = grid[cellRow][cellCol];
+        let gridCell = grid[cellRow][cellCol];                       //定义
 
         console.log(cellRow, cellCol, gridCell);
         
         if (!gridCell.clear) {
             gridCell.clear = true;
             gridCell.cellEl.classList.add("clear");
-            if (gridCell.count === 0) {
+            if (gridCell.count === 0) {                         //继续搜索
                 searchClearArea(grid, cellRow, cellCol, numRows, numCols);
             } else if (gridCell.count > 0) {
                 gridCell.cellEl.innerText = gridCell.count;
@@ -183,48 +173,7 @@ function searchClearArea(grid, row, col, numRows, numCols) {
 }
 
 
-
-function easyClearArea(grid, row, col, numRows, numCols) {
-
-
-     for (let [drow, dcol] of directions) {  
-     let cellRow = row + drow;
-     let cellCol = col + dcol;
-     if (cellRow < 0 || cellRow >= numRows || cellCol < 0 || cellCol >= numCols) {
-     continue;
-    } 
-     let count1 = 0;
-     if (grid[cellRow][cellCol].count === -1) {
-    count1 += 1;
-     }
-     if (grid[row][col].count = count1) {
-     for (let [drow, dcol] of directions) { 
-     let cellRow = row + drow;
-    let cellCol = col + dcol;
-    if (cellRow < 0 || cellRow >= numRows || cellCol < 0 || cellCol >= numCols) {
-    continue;
-     } 
-    
-     let gridCell = grid[cellRow][cellCol];
-    
-    if (gridCell.count === 0) {
-     gridCell.clear = true;
-     gridCell.cellEl.classList.add("clear");
-     easyClearArea(grid, cellRow, cellCol, numRows, numCols);
-    }
-    
-     if (gridCell.count > 0) {
-     gridCell.clear = true;
-     gridCell.cellEl.classList.add("clear"); 
-    gridCell.cellEl.innerText = gridCell.count;
-     }
-     } 
-     }
-     }
-     // 这是一个计算出周围雷数量的循环
-     }
-
-function explode(grid, row, col, numRows, numCols) {
+function explode(grid, row, col, numRows, numCols) {         //只掀开单元格
     grid[row][col].cellEl.classList.add("exploded");
 
     for (let cellRow = 0; cellRow < numRows; cellRow++) {
@@ -240,7 +189,7 @@ function explode(grid, row, col, numRows, numCols) {
     }
 }
 
-function checkAllClear(grid) {
+function checkAllClear(grid) {                                //全页面炸开
     for (let row = 0; row < grid.length; row ++) {
         let gridRow = grid[row];
         for (let col = 0; col < gridRow.length; col ++) {
@@ -268,7 +217,25 @@ function checkAllClear(grid) {
 }
 
 
+ 
+
+
 let grid = initialize(9, 9, 9);
+let grid2 = initialize(12, 12, 15);
+let grid3 = initialize(20, 20, 25);
 
+function easy() {
+    document.getElementById('board').innerHTML = "";
+    renderBoard(9, 9, grid);
+}
 
+function middle() {
+    document.getElementById('board').innerHTML = "";
+    renderBoard(12, 12 ,grid2);
+}
+
+function difficult() {
+    document.getElementById('board').innerHTML = "";
+    renderBoard(20, 20, grid3);
+}
 renderBoard(9, 9, grid);
