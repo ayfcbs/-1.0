@@ -42,6 +42,7 @@ function renderBoard(numRows, numCols, grid) {                       //绘制棋
                 }
 
                 checkAllClear(grid);
+
                 if (checkAllClear(grid) == true){
                     alert("You win");
                 }
@@ -220,7 +221,7 @@ function checkAllClear(grid) {                                //全页面炸开
  
 
 
-let grid = initialize(9, 9, 9);
+let grid = initialize(9, 9, 6);
 let grid2 = initialize(12, 12, 15);
 let grid3 = initialize(20, 20, 25);
 
